@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import Header from "../../components/common/header/header";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
@@ -19,7 +20,7 @@ const Register = () => {
         id,
         userName,
         password,
-        roles
+        roles,
       });
       alert("Registration successful!");
       navigate("/login");
@@ -29,26 +30,29 @@ const Register = () => {
   };
 
   return (
-    <div className="register">
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Register</button>
-      </form>
-      {error && <p className="error">{error}</p>}
+    <div>
+      <Header />
+      <div className="register">
+        <h2>Register</h2>
+        <form onSubmit={handleRegister}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Register</button>
+        </form>
+        {error && <p className="error">{error}</p>}
+      </div>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import TaskItem from "./../../components/task/task-item.jsx";
 import { useNavigate } from "react-router-dom";
 import "./tasks-list.css";
 import api from "../../services/api";
+import Header from "../../components/common/header/header";
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -40,38 +41,41 @@ const TaskList = () => {
   };
 
   return (
-    <div className="task-list-container">
-      <h1 className="task-list-title">All Tasks</h1>
+    <div>
+      <Header />
+      <div className="task-list-container">
+        <h1 className="task-list-title">All Tasks</h1>
 
-      <div className="filters">
-        <select onChange={(e) => handleComplexityChange([e.target.value])}>
-          <option value="">Select Complexity</option>
-          {/* Add complexity options here */}
-        </select>
+        <div className="filters">
+          <select onChange={(e) => handleComplexityChange([e.target.value])}>
+            <option value="">Select Complexity</option>
+            {/* Add complexity options here */}
+          </select>
 
-        <select onChange={(e) => handleTaskTypeChange([e.target.value])}>
-          <option value="">Select Task Type</option>
-          {/* Add task type options here */}
-        </select>
+          <select onChange={(e) => handleTaskTypeChange([e.target.value])}>
+            <option value="">Select Task Type</option>
+            {/* Add task type options here */}
+          </select>
 
-        <select onChange={(e) => handleSortingChange(e.target.value)}>
-          <option value="">Sort By</option>
-          <option value="DateCreated">Date Created</option>
-          <option value="Priority">Priority</option>
-          {/* Add other sorting options as needed */}
-        </select>
+          <select onChange={(e) => handleSortingChange(e.target.value)}>
+            <option value="">Sort By</option>
+            <option value="DateCreated">Date Created</option>
+            <option value="Priority">Priority</option>
+            {/* Add other sorting options as needed */}
+          </select>
+        </div>
+
+        <ul className="task-list">
+          {tasks.map((task) => (
+            <li key={task.id}>
+              <TaskItem
+                task={task}
+                onClick={() => navigate(`/task/${task.id}`)}
+              />
+            </li>
+          ))}
+        </ul>
       </div>
-
-      <ul className="task-list">
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <TaskItem
-              task={task}
-              onClick={() => navigate(`/task/${task.id}`)}
-            />
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
