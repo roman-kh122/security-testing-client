@@ -20,7 +20,7 @@ const Header = () => {
       </div>
       {!isAuthPage && (
         <nav style={{ display: "flex", gap: "1rem" }}>
-          <Link to="/tasks">Tasks</Link>
+          <Link to="/task">Tasks</Link>
           <Link to="/profile">Profile</Link>
           <button onClick={handleLogout} style={{ marginLeft: "1rem" }}>
             Logout
