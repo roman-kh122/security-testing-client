@@ -15,7 +15,7 @@ const Register = () => {
     try {
       const id = uuidv4();
       const roles = ["bfe91bfd-12c9-41d4-8aa0-19e46e640d67"];
-      const response = await api.post("/Users", {
+      await api.post("/Users", {
         id,
         userName,
         password,

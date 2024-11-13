@@ -20,7 +20,7 @@ const Login = () => {
       const token = response.data;
       localStorage.setItem("token", token);
       alert("Login successful!");
-      navigate("/main");
+      navigate("/task");
     } catch (err) {
       setError("Invalid username or password");
     }
