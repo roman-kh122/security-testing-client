@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TaskItem from "./../../components/task/task-item.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./tasks-list.css";
 import api from "../../services/api";
 import Header from "../../components/common/header/header";
@@ -8,8 +8,8 @@ import Header from "../../components/common/header/header";
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [filterModel, setFilterModel] = useState({
-    ComplexityIds: ["121afbc7-e25b-48dc-b2d1-600a0663a0b9"],
-    TaskTypeIdIds: ["121afbc7-e25b-48dc-b2d1-600a0663a0b9"],
+    ComplexityIds: ["8e8430e9-3c53-4cd7-b7e6-4d50b9d75d85"],
+    TaskTypeIdIds: ["5d34d28b-cdbf-4801-ac1e-086007f424c6"],
     SortingOption: "",
   });
   const navigate = useNavigate();
@@ -44,34 +44,33 @@ const TaskList = () => {
     <div>
       <Header />
       <div className="task-list-container">
-        <h1 className="task-list-title">All Tasks</h1>
+        <h1 className="task-list-title">Всі Завдання</h1>
 
         <div className="filters">
           <select onChange={(e) => handleComplexityChange([e.target.value])}>
-            <option value="">Select Complexity</option>
-            {/* Add complexity options here */}
+            <option value="">Виберіть Складність</option>
+            {/* Додайте опції складності тут */}
           </select>
 
           <select onChange={(e) => handleTaskTypeChange([e.target.value])}>
-            <option value="">Select Task Type</option>
-            {/* Add task type options here */}
+            <option value="">Виберіть Тип Завдання</option>
+            {/* Додайте опції типу завдань тут */}
           </select>
 
           <select onChange={(e) => handleSortingChange(e.target.value)}>
-            <option value="">Sort By</option>
-            <option value="DateCreated">Date Created</option>
-            <option value="Priority">Priority</option>
-            {/* Add other sorting options as needed */}
+            <option value="">Сортувати За</option>
+            <option value="DateCreated">Дата Створення</option>
+            <option value="Priority">Пріоритет</option>
+            {/* Додайте інші опції сортування за потреби */}
           </select>
         </div>
 
         <ul className="task-list">
           {tasks.map((task) => (
             <li key={task.id}>
-              <TaskItem
-                task={task}
-                onClick={() => navigate(`/task/${task.id}`)}
-              />
+              <Link to={`/task/${task.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <TaskItem task={task} />
+              </Link>
             </li>
           ))}
         </ul>
