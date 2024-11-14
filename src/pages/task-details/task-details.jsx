@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from "../../services/api"; // Імпортуємо API для роботи з бекендом
 import './task-details.css'; // Стилі для сторінки
+import Header from '../../components/common/header/header';
 
 const TaskDetails = () => {
     const { id } = useParams(); // Отримуємо ID завдання з URL
@@ -52,35 +53,48 @@ const TaskDetails = () => {
     }
 
     return (
+      <div>
+        <Header />
         <div className="task-details-container">
-            <h1 className="task-title">{task.title}</h1>
-            <p className="task-description">{task.description}</p>
-            <div className="task-meta">
-                <p><strong>Підказка:</strong> {task.prompt}</p>
-                <p><strong>Складність:</strong> {task.complexity}</p>
-                <p><strong>Тип:</strong> {task.type}</p>
+          <h1 className="task-title">{task.title}</h1>
+          <p className="task-description">{task.description}</p>
+          <div className="task-meta">
+            <p>
+              <strong>Підказка:</strong> {task.prompt}
+            </p>
+            <p>
+              <strong>Складність:</strong> {task.complexity}
+            </p>
+            <p>
+              <strong>Тип:</strong> {task.type}
+            </p>
+          </div>
+
+          {/* Форма для введення відповіді */}
+          <form onSubmit={handleSubmit} className="answer-form">
+            <label htmlFor="answer">Ваша відповідь:</label>
+            <textarea
+              id="answer"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              rows="5"
+              required
+            ></textarea>
+            <button type="submit">Надіслати відповідь</button>
+          </form>
+
+          {/* Відображення результату */}
+          {result && (
+            <div
+              className={`result-message ${
+                result.success ? "success" : "error"
+              }`}
+            >
+              {result.message}
             </div>
-
-            {/* Форма для введення відповіді */}
-            <form onSubmit={handleSubmit} className="answer-form">
-                <label htmlFor="answer">Ваша відповідь:</label>
-                <textarea
-                    id="answer"
-                    value={answer}
-                    onChange={(e) => setAnswer(e.target.value)}
-                    rows="5"
-                    required
-                ></textarea>
-                <button type="submit">Надіслати відповідь</button>
-            </form>
-
-            {/* Відображення результату */}
-            {result && (
-                <div className={`result-message ${result.success ? 'success' : 'error'}`}>
-                    {result.message}
-                </div>
-            )}
+          )}
         </div>
+      </div>
     );
 };
 

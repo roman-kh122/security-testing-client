@@ -6,6 +6,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 15px;
     transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
 }
 
 .task-card:hover {
@@ -13,13 +14,36 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
 .task-title {
     font-size: 1.5rem;
     color: #333;
-    margin-bottom: 10px;
+    margin: 0;
 }
 
 .task-description {
     font-size: 1rem;
     color: #555;
+}
+
+.completion-mark {
+    background-color: #4CAF50;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.completed {
+    border-left: 4px solid #4CAF50;
 }
