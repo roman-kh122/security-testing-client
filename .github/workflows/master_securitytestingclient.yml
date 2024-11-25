@@ -62,5 +62,5 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: "SecurityTestingClient"
-          slot-name: "Production"
-          package: .
+          package: ./build
+
