@@ -18,7 +18,7 @@ const TaskList = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, [filterModel]);
+  });
 
   const fetchTasks = async () => {
     try {
