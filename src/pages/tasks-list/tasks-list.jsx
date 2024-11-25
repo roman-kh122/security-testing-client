@@ -10,9 +10,9 @@ const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTaskIds, setCompletedTaskIds] = useState(new Set());
   const [filterModel, setFilterModel] = useState({
-    ComplexityIds: ["121afbc7-e25b-48dc-b2d1-600a0663a0b9"],
-    TaskTypeIdIds: ["121afbc7-e25b-48dc-b2d1-600a0663a0b9"],
-    SortingOption: "",
+    ComplexityIds: null,
+    TaskTypeIdIds: null,
+    SortingOption: null,
   });
   const navigate = useNavigate();
 
