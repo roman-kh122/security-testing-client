@@ -63,4 +63,3 @@ jobs:
         with:
           app-name: "SecurityTestingClient"
           package: ./build
-
