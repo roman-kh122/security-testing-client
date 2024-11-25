@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import TaskItem from "./../../components/task/task-item.jsx";
 import { useNavigate } from "react-router-dom";
 import "./tasks-list.css";
@@ -16,11 +16,7 @@ const TaskList = () => {
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchTasks();
-  });
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       // Get tasks
       const response = await api.post("/TestTasks/GetAllFiltered", filterModel);
@@ -54,7 +50,11 @@ const TaskList = () => {
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-  };
+  }, [filterModel]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   // Handlers to set filter options
   const handleComplexityChange = (ids) => {
@@ -72,38 +72,37 @@ const TaskList = () => {
   return (
     <div>
       <Header />
-      <div className="task-list-container">
-        <h1 className="task-list-title">All Tasks</h1>
+      <h1>All Tasks</h1>
 
-        <div className="filters">
-          <select onChange={(e) => handleComplexityChange([e.target.value])}>
-            <option value="">Select Complexity</option>
-            {/* Add complexity options here */}
-          </select>
+      {/* Filters */}
+      <div>
+        <select onChange={(e) => handleComplexityChange([e.target.value])}>
+          <option value="">Select Complexity</option>
+          {/* Add complexity options here */}
+        </select>
 
-          <select onChange={(e) => handleTaskTypeChange([e.target.value])}>
-            <option value="">Select Task Type</option>
-            {/* Add task type options here */}
-          </select>
+        <select onChange={(e) => handleTaskTypeChange([e.target.value])}>
+          <option value="">Select Task Type</option>
+          {/* Add task type options here */}
+        </select>
 
-          <select onChange={(e) => handleSortingChange(e.target.value)}>
-            <option value="">Sort By</option>
-            <option value="DateCreated">Date Created</option>
-            <option value="Priority">Priority</option>
-          </select>
-        </div>
+        <select onChange={(e) => handleSortingChange(e.target.value)}>
+          <option value="">Sort By</option>
+          <option value="date">Date Created</option>
+          <option value="priority">Priority</option>
+        </select>
+      </div>
 
-        <ul className="task-list">
-          {tasks.map((task) => (
-            <li key={task.id}>
-              <TaskItem
-                task={task}
-                isCompleted={completedTaskIds.has(task.id)}
-                onClick={() => navigate(`/task/${task.id}`)}
-              />
-            </li>
-          ))}
-        </ul>
+      {/* Task List */}
+      <div>
+        {tasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            isCompleted={completedTaskIds.has(task.id)}
+            onClick={() => navigate(`/task/${task.id}`)}
+          />
+        ))}
       </div>
     </div>
   );
