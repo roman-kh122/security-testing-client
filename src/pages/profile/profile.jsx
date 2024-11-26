@@ -70,7 +70,7 @@ const Profile = () => {
             <p>
               <strong>Role:</strong> {user.role}
             </p>
-            <h3>Completed Tasks</h3>
+            <h3>Completed Tasks:</h3>
             {completedTasks.length > 0 ? (
               <ul>
                 {completedTasks.map((task) => (
