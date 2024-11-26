@@ -16,7 +16,11 @@ const Header = () => {
   return (
     <header>
       <div>
-        <h1>VLPI</h1>
+        <h1>
+          <Link to="/task" style={{ textDecoration: "none", color: "inherit" }}>
+            VLPI
+          </Link>
+        </h1>
       </div>
       {!isAuthPage && (
         <nav style={{ display: "flex", gap: "1rem" }}>
