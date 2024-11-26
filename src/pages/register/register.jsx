@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import api from "../../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import Header from "../../components/common/header/header";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
 
     try {
       const id = uuidv4();
@@ -49,9 +55,22 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
           <button type="submit">Register</button>
         </form>
         {error && <p className="error">{error}</p>}
+        <p>
+          Have an account?{" "}
+          <Link to="/login" className="register-link">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../../services/api";
 import "./login.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Header from "../../components/common/header/header";
 
 const Login = () => {
@@ -47,6 +47,12 @@ const Login = () => {
           <button type="submit">Login</button>
         </form>
         {error && <p className="error">{error}</p>}
+        <p>
+          Don't have an account?{" "}
+          <Link to="/register" className="register-link">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -1,56 +1,95 @@
-/* Style for the login and register containers */
-.login, .register {
+/* Централізовані стилі */
+.login,
+.register {
   display: flex;
-  margin-top: -100px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
+  margin-top: -65px;
 }
 
+/* Заголовки */
 h2 {
   color: #333;
   font-size: 24px;
   margin-bottom: 20px;
+  border-bottom: 2px solid #4caf50;
+  padding-bottom: 5px;
 }
 
-/* Style for the form inputs */
+/* Форма */
 form {
   display: flex;
   flex-direction: column;
   width: 300px;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"],
+input[type="password"] {
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Style for the button */
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #4caf50;
+  outline: none;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Кнопка */
 button[type="submit"] {
   padding: 10px;
   margin-top: 10px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 button[type="submit"]:hover {
   background-color: #45a049;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Style for the error message */
+/* Повідомлення про помилки */
 .error {
   color: red;
   margin-top: 10px;
   font-size: 14px;
+}
+
+/* Текст і посилання */
+p {
+  margin-top: 15px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.register-link {
+  color: #4caf50;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.register-link:hover {
+  color: #45a049;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+  form {
+    width: 90%;
+  }
 }
