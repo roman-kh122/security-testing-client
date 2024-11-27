@@ -15,9 +15,16 @@
   font-size: 1.2rem;
   color: #323232;
   text-align: left;
-  border-radius: 8px;
+  
   padding: 20px;
-  background-color: #d6d2d2;
+  
+}
+
+.task-description-container {
+    background-color: #d6d2d2;
+    border-radius: 8px;
+     width: 100%;
+    box-sizing: border-box;
 }
 
 .task-tags {

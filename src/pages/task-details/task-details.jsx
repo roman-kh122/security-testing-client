@@ -110,12 +110,14 @@ const TaskDetails = () => {
           </div>
         </div>
         <div className="task-meta">
-          <p
-            className="task-description"
-            dangerouslySetInnerHTML={{
-              __html: task.description.replace(/\n/g, "<br>"),
-            }}
-          ></p>
+          <div className="task-description-container">
+            <p
+              className="task-description"
+              dangerouslySetInnerHTML={{
+                __html: task.description.replace(/\n/g, "<br>"),
+              }}
+            ></p>
+          </div>
           <p>Your answer:</p>
           <div className="submit-answer">
             <textarea
