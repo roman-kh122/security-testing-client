@@ -17,14 +17,17 @@ const Header = () => {
     <header>
       <div>
         <h1>
-          <Link to="/task" style={{ textDecoration: "none", color: "inherit" }}>
+          <Link
+            to="/modules"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
             VLPI
           </Link>
         </h1>
       </div>
       {!isAuthPage && (
         <nav style={{ display: "flex", gap: "1rem" }}>
-          <Link to="/task">Tasks</Link>
+          <Link to="/modules">Modules</Link>
           <Link to="/profile">Profile</Link>
           <button onClick={handleLogout} style={{ marginLeft: "1rem" }}>
             Logout
