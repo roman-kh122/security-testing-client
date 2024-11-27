@@ -3,12 +3,15 @@ import api from "../../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import Header from "../../components/common/header/header";
+import { Snackbar, Alert } from "@mui/material";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -16,6 +19,8 @@ const Register = () => {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      setSuccess(false);
+      setSnackbarOpen(true);
       return;
     }
 
@@ -28,11 +33,21 @@ const Register = () => {
         password,
         roles,
       });
-      alert("Registration successful!");
-      navigate("/login");
+      setError(""); // Clear any previous errors
+      setSuccess(true);
+      setSnackbarOpen(true); // Show success Snackbar
+      setTimeout(() => {
+        navigate("/login"); // Redirect after a short delay
+      }, 1500);
     } catch (err) {
-      setError("Registration failed: " + err.response?.data || err.message);
+      setError("Registration failed: " + (err.response?.data || err.message));
+      setSuccess(false);
+      setSnackbarOpen(true); // Show error Snackbar
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -64,7 +79,6 @@ const Register = () => {
           />
           <button type="submit">Register</button>
         </form>
-        {error && <p className="error">{error}</p>}
         <p>
           Have an account?{" "}
           <Link to="/login" className="register-link">
@@ -72,6 +86,31 @@ const Register = () => {
           </Link>
         </p>
       </div>
+      {/* Snackbar for success and error messages */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        {success ? (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Registration successful!
+          </Alert>
+        ) : (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        )}
+      </Snackbar>
     </div>
   );
 };

@@ -1,101 +1,198 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import api from "../../services/api"; // Імпортуємо API для роботи з бекендом
-import './task-details.css'; // Стилі для сторінки
-import Header from '../../components/common/header/header';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import api from "../../services/api";
+import "./task-details.css";
+import Header from "../../components/common/header/header";
+import { getToken } from "../../utils/token";
+import TaskComplexityTag from "../../components/info-tags/info-tag";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const TaskDetails = () => {
-    const { id } = useParams(); // Отримуємо ID завдання з URL
-    const [task, setTask] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [answer, setAnswer] = useState(''); // Стан для відповіді користувача
-    const [result, setResult] = useState(null); // Стан для результату перевірки
+  const { id } = useParams();
+  const [task, setTask] = useState(null);
+  const [answer, setAnswer] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [oldAnswers, setOldAnswers] = useState([]);
 
-    useEffect(() => {
-        const fetchTask = async () => {
-            try {
-                const response = await api.get(`/TestTasks/${id}`);
-                console.log(response); // Для перевірки відповіді сервера
-                setTask(response.data);
-            } catch (error) {
-                console.error("Error fetching task data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+  useEffect(() => {
+    const fetchTask = async () => {
+      try {
+        const response = await api.get(`/TestTasks/${id}`);
+        const responseComplexity = await api.get(
+          `/Complexities/${response.data.complexityId}`
+        );
+        const responseType = await api.get(
+          `/TaskTypes/${response.data.typeId}`
+        );
+        let responseTask = response.data;
+        responseTask.complexity = responseComplexity.data.name;
+        responseTask.type = responseType.data.name;
+        setTask(responseTask);
+        const decoded = getToken();
+        const responseAnswers = await api.get(
+          `/CompletedTasks/GetByUser/${decoded.userId}`
+        );
 
-        fetchTask();
-    }, [id]);
+        // Filter answers related to the current task ID
+        const filteredAnswers = responseAnswers.data.filter(
+          (answer) => answer.taskId === id
+        );
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+        // Update state with filtered answers
+        setOldAnswers(filteredAnswers);
 
-        try {
-            // Надсилаємо відповідь користувача на бекенд для перевірки
-            const response = await api.post(`/TestTasks/CheckAnswer`, {
-                taskId: id,
-                userAnswer: answer
-            });
-            console.log(response); // Для перевірки відповіді сервера
-            setResult(response.data); // Припускаємо, що бекенд повертає результат перевірки
-        } catch (error) {
-            console.error("Error submitting answer:", error);
-            setResult({ success: false, message: 'Помилка при надсиланні відповіді' });
-        }
+        console.log(responseTask);
+        console.log(filteredAnswers);
+      } catch (error) {
+        console.error("Error fetching task data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (loading) {
-        return <div>Завантаження...</div>;
-    }
+    fetchTask();
+  }, [id]);
 
-    if (!task) {
-        return <div>Завдання не знайдено</div>;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const decoded = getToken();
+
+    try {
+      const response = await api.post(`/CompletedTasks/ProcessAnswer`, {
+        answer: answer,
+        userId: decoded.userId,
+        testTaskId: id,
+      });
+
+      // Update the state with the new answer
+      const newAnswer = {
+        id: response.data.id, // Adjust based on the API response
+        taskId: id,
+        answer: answer,
+        score: response.data.score || "N/A", // Adjust based on the API response
+        feedback: response.data.feedback || "No feedback provided",
+        isPassed: response.data.isPassed || false, // Adjust based on the API response
+      };
+
+      setOldAnswers((prevAnswers) => [newAnswer, ...prevAnswers]); // Add the new answer at the top
+      setAnswer(""); // Clear the input field
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+    }
+  };
+
+  if (loading) {
     return (
-      <div>
-        <Header />
-        <div className="task-details-container">
-          <h1 className="task-title">{task.title}</h1>
-          <p className="task-description">{task.description}</p>
-          <div className="task-meta">
-            <p>
-              <strong>Підказка:</strong> {task.prompt}
-            </p>
-            <p>
-              <strong>Складність:</strong> {task.complexity}
-            </p>
-            <p>
-              <strong>Тип:</strong> {task.type}
-            </p>
-          </div>
+      <div className="loading-container">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
-          {/* Форма для введення відповіді */}
-          <form onSubmit={handleSubmit} className="answer-form">
-            <label htmlFor="answer">Ваша відповідь:</label>
+  return (
+    <div>
+      <Header />
+      <div className="task-details-container">
+        <div className="task-details-header">
+          <h1 className="task-title">{task.title}</h1>
+          <div>
+            <TaskComplexityTag complexity={task.complexity} />
+            <TaskComplexityTag complexity={task.type} />
+          </div>
+        </div>
+        <div className="task-meta">
+          <p
+            className="task-description"
+            dangerouslySetInnerHTML={{
+              __html: task.description.replace(/\n/g, "<br>"),
+            }}
+          ></p>
+          <p>Your answer:</p>
+          <div className="submit-answer">
             <textarea
+              className="answer-input"
               id="answer"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               rows="5"
               required
             ></textarea>
-            <button type="submit">Надіслати відповідь</button>
-          </form>
+            <button type="submit" onClick={handleSubmit}>
+              Submit
+            </button>
+          </div>
+        </div>
 
-          {/* Відображення результату */}
-          {result && (
-            <div
-              className={`result-message ${
-                result.success ? "success" : "error"
-              }`}
-            >
-              {result.message}
-            </div>
+        <div className="old-answers">
+          <h3>Previous Answers</h3>
+          {oldAnswers.length > 0 ? (
+            oldAnswers.map((oldAnswer, index) => (
+              <Accordion
+                key={oldAnswer.id}
+                style={{
+                  backgroundColor: "#f9f9f9", // Neutral background
+                  borderLeft: `4px solid ${
+                    oldAnswer.isPassed ? "#4caf50" : "#f44336"
+                  }`, // Green or red border for status
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`panel-${index}-content`}
+                  id={`panel-${index}-header`}
+                >
+                  <Typography>
+                    <strong>Answer</strong>
+                  </Typography>
+                  {oldAnswer.isPassed ? (
+                    <CheckCircleIcon
+                      style={{ color: "#4caf50", marginLeft: "10px" }}
+                      titleAccess="Passed"
+                    />
+                  ) : (
+                    <CancelIcon
+                      style={{ color: "#f44336", marginLeft: "10px" }}
+                      titleAccess="Failed"
+                    />
+                  )}
+                </AccordionSummary>
+                <AccordionDetails>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "left",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography>
+                      <strong>Answer:</strong>{" "}
+                      {oldAnswer.answer || "No answer provided"}
+                    </Typography>
+                    <Typography>
+                      <strong>Score:</strong> {oldAnswer.score}
+                    </Typography>
+                    <Typography>
+                      <strong>Feedback:</strong> {oldAnswer.feedback}
+                    </Typography>
+                  </div>
+                </AccordionDetails>
+              </Accordion>
+            ))
+          ) : (
+            <p>No previous answers for this task.</p>
           )}
         </div>
       </div>
-    );
+    </div>
+  );
 };
 
 export default TaskDetails;

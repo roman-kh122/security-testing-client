@@ -1,0 +1,35 @@
+/* Base Styles */
+.complexity-tag {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  color: #000;
+  border: 2px solid transparent;
+  background-color: #fff; /* White background */
+  text-align: center;
+  display: inline-block;
+  min-width: 100px;
+  font-weight: bold;
+}
+
+/* Specific Complexities */
+.complexity-easy {
+  border-color: #4caf50; /* Green */
+  color: #4caf50;
+}
+
+.complexity-normal {
+  border-color: #ffc107; /* Amber */
+  color: #ffc107;
+}
+
+.complexity-hard {
+  border-color: #f44336; /* Red */
+  color: #f44336;
+}
+
+/* Default for Unknown Complexities */
+.complexity-unknown {
+  border-color: #9e9e9e; /* Grey */
+  color: #9e9e9e;
+}

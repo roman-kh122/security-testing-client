@@ -4,10 +4,11 @@ import "./tasks-list.css";
 import api from "../../services/api";
 import Header from "../../components/common/header/header";
 import { jwtDecode } from "jwt-decode";
+import TaskComplexityTag from "../../components/info-tags/info-tag";
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
-  const [completedTaskIds, setCompletedTaskIds] = useState(new Set());
+  const [completedTaskStatuses, setCompletedTaskStatuses] = useState({});
   const [filterModel, setFilterModel] = useState({
     ComplexityIds: [],
     TaskTypeIdIds: [],
@@ -43,11 +44,20 @@ const TaskList = () => {
       setComplexities(complexitiesResponse.data);
       setTaskTypes(taskTypesResponse.data);
 
-      // Create a Set of completed task IDs for efficient lookup
-      const completedIds = new Set(
-        completedTasksResponse.data.map((task) => task.taskId)
-      );
-      setCompletedTaskIds(completedIds);
+      // Create a map of task statuses for efficient lookup
+      const statuses = {};
+      completedTasksResponse.data.forEach((task) => {
+        if (!statuses[task.taskId]) statuses[task.taskId] = [];
+        statuses[task.taskId].push(task.isPassed);
+      });
+
+      const taskStatusMap = Object.keys(statuses).reduce((acc, taskId) => {
+        const allFailed = statuses[taskId].every((status) => status === false);
+        acc[taskId] = allFailed ? "failed" : "completed";
+        return acc;
+      }, {});
+
+      setCompletedTaskStatuses(taskStatusMap);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -57,7 +67,6 @@ const TaskList = () => {
     fetchTasks();
   }, [fetchTasks]);
 
-  // Update filter model when checkboxes are toggled
   const handleCheckboxChange = (type, id) => {
     setFilterModel((prev) => {
       const updatedList = prev[type].includes(id)
@@ -67,23 +76,20 @@ const TaskList = () => {
     });
   };
 
-  // Function to get complexity name by id
   const getComplexityName = (id) => {
     const complexity = complexities.find((comp) => comp.id === id);
     return complexity ? complexity.name : "Unknown";
   };
 
-  // Function to get task type name by id
   const getTaskTypeName = (id) => {
     const taskType = taskTypes.find((type) => type.id === id);
     return taskType ? taskType.name : "Unknown";
   };
 
-  // Function to handle sorting order change
   const handleSortingChange = (event) => {
     setFilterModel((prev) => ({
       ...prev,
-      SortingOption: event.target.value, // Update the sorting option
+      SortingOption: event.target.value,
     }));
   };
 
@@ -156,28 +162,37 @@ const TaskList = () => {
         <div className="task-list-wrapper">
           <h1 className="task-list-title">Tasks</h1>
           <ul className="task-list">
-            {tasks.map((task) => (
-              <li key={task.id}>
-                <div
-                  className={`task-item ${
-                    completedTaskIds.has(task.id) ? "completed" : ""
-                  }`}
-                  onClick={() => navigate(`/task/${task.id}`)}
-                >
-                  <h3>{task.title}</h3>
-                  <p>
-                    <strong>Complexity:</strong>{" "}
-                    {getComplexityName(task.complexityId)}
-                  </p>
-                  <p>
-                    <strong>Type:</strong> {getTaskTypeName(task.typeId)}
-                  </p>
-                  {completedTaskIds.has(task.id) && (
-                    <span className="task-completed-label">Completed</span>
-                  )}
-                </div>
-              </li>
-            ))}
+            {tasks.map((task) => {
+              const status = completedTaskStatuses[task.id];
+              const taskClass =
+                status === "completed"
+                  ? "completed"
+                  : status === "failed"
+                  ? "failed"
+                  : "";
+              return (
+                <li key={task.id}>
+                  <div
+                    className={`task-item ${taskClass}`}
+                    onClick={() => navigate(`/task/${task.id}`)}
+                  >
+                    <h3>{task.title}</h3>
+                    <TaskComplexityTag
+                      complexity={getComplexityName(task.complexityId)}
+                    />
+                    <TaskComplexityTag
+                      complexity={getTaskTypeName(task.typeId)}
+                    />
+                    {status === "completed" && (
+                      <span className="task-completed-label">Completed</span>
+                    )}
+                    {status === "failed" && (
+                      <span className="task-failed-label">Failed</span>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
