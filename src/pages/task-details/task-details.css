@@ -21,11 +21,12 @@
 }
 
 .task-tags {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: flex-end; /* Розташовує всі елементи праворуч */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-end; /* Розташовує всі елементи праворуч */
 }
+
 
 .task-meta {
   display: flex;
