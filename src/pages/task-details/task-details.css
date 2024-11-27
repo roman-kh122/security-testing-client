@@ -1,58 +1,73 @@
 .task-details-container {
-    display: flex;
-    flex-direction: column;
-    padding: 50px;
+  display: flex;
+  flex-direction: column;
+  padding: 50px;
 }
 
 .task-details-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .task-description {
-    font-size: 1.2rem;
-    color: #323232;
-    text-align: left;
-    border-radius: 8px;
-    padding: 20px;
+  font-size: 1.2rem;
+  color: #323232;
+  text-align: left;
+  
+  padding: 20px;
+  
+}
+
+.task-description-container {
     background-color: #d6d2d2;
-}
-
-.task-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-top: 20px;
-    padding: 20px;
     border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-.submit-answer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.answer-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    resize: vertical;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+     width: 100%;
     box-sizing: border-box;
 }
 
+.task-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-end; /* Розташовує всі елементи праворуч */
+}
+
+
+.task-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.submit-answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.answer-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
 .old-answers {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .old-answers .accordion-content {
@@ -70,4 +85,10 @@
 
 .pass-status.not-passed {
   color: red;
+}
+
+@media (max-width: 768px) {
+  .task-details-container {
+    padding: 30px;
+  }
 }

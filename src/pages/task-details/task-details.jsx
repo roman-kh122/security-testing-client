@@ -19,8 +19,10 @@ const TaskDetails = () => {
   const [task, setTask] = useState(null);
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [oldAnswers, setOldAnswers] = useState([]);
   const navigate = useNavigate();
+  const [expandedAccordion, setExpandedAccordion] = useState(null); // Track expanded accordion
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -36,6 +38,7 @@ const TaskDetails = () => {
         responseTask.complexity = responseComplexity.data.name;
         responseTask.type = responseType.data.name;
         setTask(responseTask);
+
         const decoded = getToken();
         const responseAnswers = await api.get(
           `/CompletedTasks/GetByUser/${decoded.userId}`
@@ -46,11 +49,7 @@ const TaskDetails = () => {
           (answer) => answer.taskId === id
         );
 
-        // Update state with filtered answers
         setOldAnswers(filteredAnswers);
-
-        console.log(responseTask);
-        console.log(filteredAnswers);
       } catch (error) {
         console.error("Error fetching task data:", error);
       } finally {
@@ -65,6 +64,7 @@ const TaskDetails = () => {
     e.preventDefault();
 
     const decoded = getToken();
+    setSubmitting(true); // Start loading indicator
 
     try {
       const response = await api.post(`/CompletedTasks/ProcessAnswer`, {
@@ -73,20 +73,22 @@ const TaskDetails = () => {
         testTaskId: id,
       });
 
-      // Update the state with the new answer
       const newAnswer = {
-        id: response.data.id, // Adjust based on the API response
+        id: response.data.id,
         taskId: id,
         answer: answer,
-        score: response.data.score, // Adjust based on the API response
+        score: response.data.score,
         feedback: response.data.feedback || "No feedback provided",
-        isPassed: response.data.isPassed || false, // Adjust based on the API response
+        isPassed: response.data.isPassed || false,
       };
 
-      setOldAnswers((prevAnswers) => [newAnswer, ...prevAnswers]); // Add the new answer at the top
-      setAnswer(""); // Clear the input field
+      setOldAnswers((prevAnswers) => [newAnswer, ...prevAnswers]);
+      setAnswer("");
+      setExpandedAccordion(newAnswer.id); // Automatically open the new accordion
     } catch (error) {
       console.error("Error submitting answer:", error);
+    } finally {
+      setSubmitting(false); // Stop loading indicator
     }
   };
 
@@ -128,19 +130,21 @@ const TaskDetails = () => {
       <div className="task-details-container">
         <div className="task-details-header">
           <h1 className="task-title">{task.title}</h1>
-          <div>
+          <div className="task-tags">
             <TaskComplexityTag complexity={task.complexity} />
             <TaskComplexityTag complexity={task.type} />
           </div>
         </div>
         {showDeleteButton()}
         <div className="task-meta">
-          <p
-            className="task-description"
-            dangerouslySetInnerHTML={{
-              __html: task.description.replace(/\n/g, "<br>"),
-            }}
-          ></p>
+          <div className="task-description-container">
+            <p
+              className="task-description"
+              dangerouslySetInnerHTML={{
+                __html: task.description.replace(/\n/g, "<br>"),
+              }}
+            ></p>
+          </div>
           <p>Your answer:</p>
           <div className="submit-answer">
             <textarea
@@ -151,8 +155,8 @@ const TaskDetails = () => {
               rows="5"
               required
             ></textarea>
-            <button type="submit" onClick={handleSubmit}>
-              Submit
+            <button type="submit" onClick={handleSubmit} disabled={submitting}>
+              {submitting ? "Submitting..." : "Submit"}
             </button>
           </div>
         </div>
@@ -163,11 +167,17 @@ const TaskDetails = () => {
             oldAnswers.map((oldAnswer, index) => (
               <Accordion
                 key={oldAnswer.id}
+                expanded={expandedAccordion === oldAnswer.id} // Control which accordion is open
+                onChange={() =>
+                  setExpandedAccordion(
+                    expandedAccordion === oldAnswer.id ? null : oldAnswer.id
+                  )
+                }
                 style={{
-                  backgroundColor: "#f9f9f9", // Neutral background
+                  backgroundColor: "#f9f9f9",
                   borderLeft: `4px solid ${
                     oldAnswer.isPassed ? "#4caf50" : "#f44336"
-                  }`, // Green or red border for status
+                  }`,
                 }}
               >
                 <AccordionSummary
