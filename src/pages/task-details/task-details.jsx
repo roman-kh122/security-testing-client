@@ -103,7 +103,7 @@ const TaskDetails = () => {
   const handleDelete = async (e) => {
     try {
       e.preventDefault();
-      const response = await api.delete(`/TestTasks/${id}`);
+      await api.delete(`/TestTasks/${id}`);
       alert("Task deleted successfully!");
       navigate("/testing/security");
     } catch (error) {
