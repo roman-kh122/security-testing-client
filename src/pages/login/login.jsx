@@ -25,7 +25,7 @@ const Login = () => {
       setSuccess(true);
       setSnackbarOpen(true); // Show success Snackbar
       setTimeout(() => {
-        navigate("/task"); // Redirect after a short delay
+        navigate("/modules"); // Redirect after a short delay
       }, 1500);
     } catch (err) {
       setError("Invalid username or password");
