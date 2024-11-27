@@ -102,7 +102,7 @@ const TaskDetails = () => {
       <div className="task-details-container">
         <div className="task-details-header">
           <h1 className="task-title">{task.title}</h1>
-          <div>
+          <div className="task-tags">
             <TaskComplexityTag complexity={task.complexity} />
             <TaskComplexityTag complexity={task.type} />
           </div>
