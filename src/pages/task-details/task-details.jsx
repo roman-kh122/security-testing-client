@@ -76,7 +76,7 @@ const TaskDetails = () => {
         id: response.data.id, // Adjust based on the API response
         taskId: id,
         answer: answer,
-        score: response.data.score || "N/A", // Adjust based on the API response
+        score: response.data.score, // Adjust based on the API response
         feedback: response.data.feedback || "No feedback provided",
         isPassed: response.data.isPassed || false, // Adjust based on the API response
       };
