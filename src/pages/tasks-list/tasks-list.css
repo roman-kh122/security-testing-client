@@ -126,11 +126,6 @@ body {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  html,
-  body {
-    padding: 10px;
-  }
-
   .task-list-container {
     flex-direction: column;
     gap: 15px;
