@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useNavigate } from "react-router-dom";
 
 const TaskDetails = () => {
   const { id } = useParams();
@@ -19,6 +20,7 @@ const TaskDetails = () => {
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(true);
   const [oldAnswers, setOldAnswers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -96,6 +98,30 @@ const TaskDetails = () => {
     );
   }
 
+  const handleDelete = async (e) => {
+    try {
+      e.preventDefault();
+      const response = await api.delete(`/TestTasks/${id}`);
+      alert("Task deleted successfully!");
+      navigate("/testing/security");
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
+  const showDeleteButton = () => {
+    const decoded = getToken();
+    if(decoded.role === "Moderator") {
+      return (
+        <div>
+          <button onClick={handleDelete}>
+            Delete Task
+          </button>
+        </div>
+      )
+    }
+  }
+
   return (
     <div>
       <Header />
@@ -107,6 +133,7 @@ const TaskDetails = () => {
             <TaskComplexityTag complexity={task.type} />
           </div>
         </div>
+        {showDeleteButton()}
         <div className="task-meta">
           <p
             className="task-description"

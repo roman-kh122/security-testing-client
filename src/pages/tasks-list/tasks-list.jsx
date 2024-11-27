@@ -5,6 +5,7 @@ import api from "../../services/api";
 import Header from "../../components/common/header/header";
 import { jwtDecode } from "jwt-decode";
 import TaskComplexityTag from "../../components/info-tags/info-tag";
+import { getToken } from "../../utils/token";
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -93,6 +94,23 @@ const TaskList = () => {
     }));
   };
 
+  const redirectToCreate = () => {
+    navigate("/task/create");
+  };
+
+  const showCreateButton = () => {
+    const decoded = getToken();
+    if(decoded.role === "Moderator") {
+      return (
+        <div className="wrap-button">
+          <button onClick={redirectToCreate} class = "create-button">
+            Create Task
+          </button>
+        </div>
+      )
+    }
+  }
+
   return (
     <div>
       <Header />
@@ -161,6 +179,7 @@ const TaskList = () => {
 
         <div className="task-list-wrapper">
           <h1 className="task-list-title">Tasks</h1>
+          {showCreateButton()}
           <ul className="task-list">
             {tasks.map((task) => {
               const status = completedTaskStatuses[task.id];
