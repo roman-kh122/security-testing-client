@@ -257,3 +257,15 @@ body {
   background-color: #f44336;
   border-radius: 5px;
 }
+
+.create-button {
+  background-color: blue;
+  width: 25%;
+}
+
+.wrap-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 2%;
+}
