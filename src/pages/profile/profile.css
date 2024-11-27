@@ -7,6 +7,10 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.profile-info {
+  margin-left: 72px;
+}
+
 h2 {
   font-size: 2rem;
   color: #333;
@@ -19,4 +23,11 @@ p {
 
 strong {
   color: #333;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
 }

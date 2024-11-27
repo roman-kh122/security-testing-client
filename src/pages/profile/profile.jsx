@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
-import "./profile.css";
+import { jwtDecode } from "jwt-decode";
 import Header from "../../components/common/header/header";
+import "./profile.css";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -60,36 +60,50 @@ const Profile = () => {
   return (
     <div>
       <Header />
-      <div className="profile">
-        <h2>Profile</h2>
-        {user ? (
-          <>
-            <p>
-              <strong>Username:</strong> {user.userName}
-            </p>
-            <p>
-              <strong>Role:</strong> {user.role}
-            </p>
-            <h3>Completed Tasks:</h3>
-            {completedTasks.length > 0 ? (
-              <ul>
-                {completedTasks.map((task) => (
-                  <li key={task.id}>
+      <div className="profile-container">
+        <div className="profile-info">
+          <h1>User Profile</h1>
+          {user ? (
+            <>
+              <p>
+                <strong>Username:</strong> {user.userName}
+              </p>
+              <p>
+                <strong>Role:</strong> {user.role}
+              </p>
+              <h1>Completion Tries:</h1>
+            </>
+          ) : (
+            <p>Loading user information...</p>
+          )}
+        </div>
+
+        <div className="completed-tasks">
+          {completedTasks.length > 0 ? (
+            <ul className="task-list">
+              {completedTasks.map((task) => (
+                <li key={task.id}>
+                  <div
+                    className={`task-item ${
+                      task.isPassed ? "completed" : "failed"
+                    }`}
+                  >
                     <Link to={`/task/${task.taskId}`}>
-                      {tasksDetails[task.taskId]?.description || "Loading..."}
+                      <h3>
+                        {tasksDetails[task.taskId]?.title ||
+                          "Loading task details..."}
+                      </h3>
                     </Link>
                     <p>Score: {task.score}</p>
                     <p>Passed: {task.isPassed ? "Yes" : "No"}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No completed tasks found.</p>
-            )}
-          </>
-        ) : (
-          <p>Loading profile data...</p>
-        )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No completed tasks found.</p>
+          )}
+        </div>
       </div>
     </div>
   );
